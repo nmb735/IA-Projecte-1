@@ -237,3 +237,8 @@ def Astar(origin_id, destination_id, map, type_preference=0):
             list_of_path[0] (Path Class): The route that goes from origin_id to destination_id
     """
     pass
+
+#remove later!
+def helloWorld():
+    print("Hello World!")
+#remove later!

@@ -1,6 +1,6 @@
 # This file contains all the required routines to make an A* search algorithm.
 #
-__author__ = 'TO_BE_FILLED'
+__author__ = '1632368'
 # _________________________________________________________________________________________
 # Intel.ligencia Artificial
 # Curs 2023 - 2024

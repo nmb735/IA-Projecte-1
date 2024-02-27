@@ -24,7 +24,20 @@ def expand(path, map):
         Returns:
             path_list (list): List of paths that are connected to the given path.
     """
-    pass
+    path_list = []
+
+    if len(path.route) > 0:
+        con = map.connections[path.last]
+        for c, cost in con.items():
+            n_path = Path(path.route)
+            n_path.add_route(c)
+            n_path.update_g(cost)
+            path_list.append(n_path)
+
+    else:
+        raise TypeError("Path is empty")
+    
+    return path_list
 
 
 def remove_cycles(path_list):

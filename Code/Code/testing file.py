@@ -21,6 +21,16 @@ if __name__=="__main__":
     for path in example_path:
         print(f"Route: {path.route}")
         print(f"Cost: {path.g}")
+    
+    route1 = depth_first_search(2, 7, map)
+    route2 = depth_first_search(13, 1,map)
+    route3 = depth_first_search(5, 12,map)
+    route4 = depth_first_search(14, 10, map)
+
+    print(route1.route)
+    print(route2.route)
+    print(route3.route)
+    print(route4.route)
  
 
 

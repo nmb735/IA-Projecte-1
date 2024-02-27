@@ -39,7 +39,6 @@ def expand(path, map):
     
     return path_list
 
-
 def remove_cycles(path_list):
     """
      It removes from path_list the set of paths that include some cycles in their path.
@@ -65,8 +64,6 @@ def remove_cycles(path_list):
             
     return paths
 
-
-
 def insert_depth_first_search(expand_paths, list_of_path):
     """
      expand_paths is inserted to the list_of_path according to DEPTH FIRST SEARCH algorithm
@@ -77,8 +74,10 @@ def insert_depth_first_search(expand_paths, list_of_path):
         Returns:
             list_of_path (LIST of Path Class): List of Paths where Expanded Path is inserted
     """
-    pass
-
+    #Pseudocode --> Insert up front
+    for path in reversed(expand_paths):
+        list_of_path.insert(0,path)
+    return list_of_path
 
 def depth_first_search(origin_id, destination_id, map):
     """
@@ -91,7 +90,20 @@ def depth_first_search(origin_id, destination_id, map):
         Returns:
             list_of_path[0] (Path Class): the route that goes from origin_id to destination_id
     """
-    pass
+    paths = []
+    root_path = Path([origin_id])
+    paths.append(root_path)
+
+    while paths[0].last != destination_id and len(paths) > 0:
+        path = paths.pop(0)
+        paths = insert_depth_first_search(remove_cycles(expand(path,map)),paths)
+        #for i in paths:
+        #    print(i.route)
+        #print("_______________________")
+    if paths[0].last == destination_id:
+        return paths[0]
+    else:
+        return "No existeix Solucio"
 
 
 def insert_breadth_first_search(expand_paths, list_of_path):
@@ -104,7 +116,11 @@ def insert_breadth_first_search(expand_paths, list_of_path):
            Returns:
                list_of_path (LIST of Path Class): List of Paths where Expanded Path is inserted
     """
-    pass
+    # Pseudocode --> Insert at the back
+    for path in expand_paths:
+        list_of_path.append(path)
+
+    return list_of_path
 
 
 def breadth_first_search(origin_id, destination_id, map):

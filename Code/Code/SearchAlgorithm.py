@@ -29,13 +29,13 @@ def expand(path, map):
     if len(path.route) > 0:
         con = map.connections[path.last]
         for c, cost in con.items():
-            n_path = Path(path.route)
+            n_path = Path(path.route.copy())
             n_path.add_route(c)
             n_path.update_g(cost)
             path_list.append(n_path)
 
     else:
-        raise TypeError("Path is empty")
+        raise TypeError("Path is empty, it has no routes")
     
     return path_list
 

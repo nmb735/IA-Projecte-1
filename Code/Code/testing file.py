@@ -16,10 +16,11 @@ if __name__=="__main__":
     ###BELOW HERE YOU CAN CALL ANY FUNCTION THAT YOU HAVE PROGRAMED TO ANSWER THE QUESTIONS FOR THE TEST###
 
     #example
-    example_path = expand(Path([5]), map)
+    example_path = expand(Path([14, 13, 8, 12]), map)
+    example_path = remove_cycles(example_path)
     for path in example_path:
         print(f"Route: {path.route}")
         print(f"Cost: {path.g}")
-    print_list_of_path([example_path])
+ 
 
 

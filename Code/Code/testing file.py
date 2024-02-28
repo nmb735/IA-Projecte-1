@@ -12,8 +12,8 @@ if __name__=="__main__":
     map.add_velocity(infoVelocity_clean)
 
     ###BELOW HERE YOU CAN CALL ANY FUNCTION THAT YOU HAVE PROGRAMED TO ANSWER THE QUESTIONS FOR THE TEST###
-    #example - Used testing
     """"
+    #example - Used testing
     example_path = expand(Path([14, 13, 8, 12]), map)
     example_path = remove_cycles(example_path)
     for path in example_path:

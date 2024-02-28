@@ -141,7 +141,6 @@ def breadth_first_search(origin_id, destination_id, map):
     else:
         return "No existeix Solucio"
 
-
 def calculate_cost(expand_paths, map, type_preference=0):
     """
          Calculate the cost according to type preference
@@ -159,7 +158,6 @@ def calculate_cost(expand_paths, map, type_preference=0):
     """
     pass
 
-
 def insert_cost(expand_paths, list_of_path):
     """
         expand_paths is inserted to the list_of_path according to COST VALUE
@@ -171,7 +169,6 @@ def insert_cost(expand_paths, list_of_path):
                list_of_path (LIST of Path Class): List of Paths where expanded_path is inserted according to cost
     """
     pass
-
 
 def uniform_cost_search(origin_id, destination_id, map, type_preference=0):
     """
@@ -190,7 +187,6 @@ def uniform_cost_search(origin_id, destination_id, map, type_preference=0):
             list_of_path[0] (Path Class): The route that goes from origin_id to destination_id
     """
     pass
-
 
 def calculate_heuristics(expand_paths, map, destination_id, type_preference=0):
     """
@@ -212,7 +208,6 @@ def calculate_heuristics(expand_paths, map, destination_id, type_preference=0):
     """
     pass
 
-
 def update_f(expand_paths):
     """
       Update the f of a path
@@ -223,7 +218,6 @@ def update_f(expand_paths):
              expand_paths (LIST of Path Class): Expanded paths with updated costs
     """
     pass
-
 
 def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost):
     """
@@ -241,7 +235,6 @@ def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost):
     """
     pass
 
-
 def insert_cost_f(expand_paths, list_of_path):
     """
         expand_paths is inserted to the list_of_path according to f VALUE
@@ -254,7 +247,6 @@ def insert_cost_f(expand_paths, list_of_path):
     """
     pass
 
-
 def distance_to_stations(coord, map):
     """
         From coordinates, it computes the distance to all stations in map.
@@ -266,8 +258,16 @@ def distance_to_stations(coord, map):
             (dict): Dictionary containing as keys, all the Indexes of all the stations in the map, and as values, the
             distance between each station and the coord point
     """
-    pass
+    distances = {}
 
+    for station_id, station_info in map.stations.items():
+        station_coor = [station_info['x'], station_info['y']]
+        # d = round(euclidean_dist(coord, station_coor),2)
+        distances[station_id] = euclidean_dist(coord, station_coor)
+
+    sorted_distances = dict(sorted(distances.items(), key=lambda x: (x[1],x[0])))
+
+    return sorted_distances
 
 def Astar(origin_id, destination_id, map, type_preference=0):
     """

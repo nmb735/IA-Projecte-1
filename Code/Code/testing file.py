@@ -39,6 +39,10 @@ if __name__=="__main__":
     print(route2.route)
     print(route3.route)
     print(route4.route)
- 
+
+    distances = distance_to_stations([300, 111], map)
+    for k, v in distances.items():
+        print(f"{k}:{v}")
+    print(round(distances[9], 6))
 
 

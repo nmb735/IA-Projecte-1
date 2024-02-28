@@ -94,13 +94,22 @@ def depth_first_search(origin_id, destination_id, map):
     root_path = Path([origin_id])
     paths.append(root_path)
 
-    while paths[0].last != destination_id and len(paths) > 0:
+    while len(paths) > 0 and paths[0].last != destination_id:
         path = paths.pop(0)
         paths = insert_depth_first_search(remove_cycles(expand(path,map)),paths)
-    if paths[0].last == destination_id:
+        
+    if len(paths) <= 0:
+        empty_path = Path([0])
+        empty_path.route.pop(0)
+        return empty_path
+    
+    elif paths[0].last == destination_id:
         return paths[0]
+    
     else:
-        return "No existeix Solucio"
+        empty_path = Path([0])
+        empty_path.route.pop(0)
+        return empty_path
 
 def insert_breadth_first_search(expand_paths, list_of_path):
     """
@@ -128,18 +137,27 @@ def breadth_first_search(origin_id, destination_id, map):
             map (object of Map class): All the map information
         Returns:
             list_of_path[0] (Path Class): The route that goes from origin_id to destination_id
-    """
+    """  
     paths = []
     root_path = Path([origin_id])
     paths.append(root_path)
 
-    while paths[0].last != destination_id and len(paths) > 0:
+    while len(paths) > 0 and paths[0].last != destination_id:
         path = paths.pop(0)
         paths = insert_breadth_first_search(remove_cycles(expand(path,map)),paths)
-    if paths[0].last == destination_id:
+        
+    if len(paths) <= 0:
+        empty_path = Path([0])
+        empty_path.route.pop(0)
+        return empty_path
+    
+    elif paths[0].last == destination_id:
         return paths[0]
+    
     else:
-        return "No existeix Solucio"
+        empty_path = Path([0])
+        empty_path.route.pop(0)
+        return empty_path
 
 def calculate_cost(expand_paths, map, type_preference=0):
     """

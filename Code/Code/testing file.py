@@ -138,9 +138,52 @@ if __name__=="__main__":
     13:232.59406699226014
     14:275.68822970885066
     """
-
     
 
+print("Starting Test section")
+print("-------------------------------------------------------")
+print("Test 1")
+example_path = expand(Path([2]), map)
+print_list_of_path(example_path)
+print("-------------------------------------------------------")
+print("Test 2")
+example_path = expand(Path([4,5]), map)
+print_list_of_path(example_path)
+print("-------------------------------------------------------")
+print("Test 3")
+example_path = expand(Path([4,5,6]), map)
+print_list_of_path(example_path)
+print("----------")
+example_path = remove_cycles(example_path)
+print_list_of_path(example_path)
+print("-------------------------------------------------------")
+print("Test 4")
+example_path = remove_cycles([Path([7,7])])
+print_list_of_path(example_path)
+print("")
+print("-------------------------------------------------------")
+print("Test 5")
+example_path = depth_first_search(3, 10, map)
+print_list_of_path([example_path])
+print("-------------------------------------------------------")
+print("Test 6")
+example_path = depth_first_search( 10 , 10, map )
+print_list_of_path([example_path])
+print("-------------------------------------------------------")
+print("Test 7")
+example_path = depth_first_search( 1 , 10, map )
+print_list_of_path([example_path])
+print("--------------------")
+example_path = breadth_first_search( 1 , 10, map )
+print_list_of_path([example_path])
+print("-------------------------------------------------------")
+print("Test 8")
+example_path = breadth_first_search( 10, 10000, map)
+print_list_of_path([example_path])
+print("-------------------------------------------------------")
+print("Test 9")
+distances = distance_to_stations([0, 0], map)
+for k, v in distances.items():
+    print(f"{k}:{v}")
 
-    
 

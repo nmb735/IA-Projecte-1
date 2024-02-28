@@ -43,7 +43,6 @@ if __name__=="__main__":
         print(f"{k}:{v}")
     print(round(distances[9], 6))
 """
-
     """"
     Test 1
     example_path = expand(Path([2]), map)
@@ -53,7 +52,6 @@ if __name__=="__main__":
     Route: [2, 5]
     Route: [2, 10]
     """
-
     """"
     Test 2
     example_path = expand(Path([4,5]), map)
@@ -63,7 +61,6 @@ if __name__=="__main__":
     Route: [4, 5, 6]
     Route: [4, 5, 10]
     """
-
     """""
     # Test 3
     example_path = expand(Path([4,5,6]), map)
@@ -76,7 +73,6 @@ if __name__=="__main__":
     ----------
     Route: [4, 5, 6, 7]
     """
-
     """"
     # Test 4
     example_path = remove_cycles([Path([7,7])])
@@ -84,21 +80,18 @@ if __name__=="__main__":
 
     (retorna buit)
     """
-
     """"
     # Test 5
     example_path = depth_first_search(3, 10, map)
     print_list_of_path([example_path])
     Route: [3, 2, 5, 6, 7, 8, 12, 11, 10]
     """
-
     """
     # Test 6
     example_path = depth_first_search( 10 , 10, map )
     print_list_of_path([example_path])
     Route: [10]
     """
-
     """""
     #Test 7
     example_path = depth_first_search( 1 , 10, map )
@@ -110,14 +103,12 @@ if __name__=="__main__":
     --------------------
     Route: [1, 2, 10]
     """
-
     """"
     # Test 8 --> ERROR. Ha de retornar llista buida
     example_path = breadth_first_search( 10, 10000, map)
     print_list_of_path([example_path])
     ERROR
     """
-
     """
     # Test 9
     distances = distance_to_stations([0, 0], map)
@@ -138,52 +129,124 @@ if __name__=="__main__":
     13:232.59406699226014
     14:275.68822970885066
     """
-    
+def testing(): 
+    print("Starting Test section (Test Cases)")
+    print("-------------------------------------------------------")
+    print("Test Expand")
+    expanded_paths = expand(Path(7), map)
+    print_list_of_path(expanded_paths)
+    print("----------")
+    expanded_paths = expand(Path([13, 12]), map)
+    print_list_of_path(expanded_paths)
+    print("----------")
+    expanded_paths = expand(Path([14, 13, 8, 12]), map)
+    print_list_of_path(expanded_paths)
+    print("-------------------------------------------------------")
+    print("Test Remove Cycles")
+    expanded_paths = expand(Path(7), map)
+    expanded_paths = remove_cycles(expanded_paths)
+    print_list_of_path(expanded_paths)
+    print("----------")
+    expanded_paths = expand(Path([13, 12]), map)
+    expanded_paths = remove_cycles(expanded_paths)
+    print_list_of_path(expanded_paths)
+    print("----------")
+    expanded_paths = expand(Path([14, 13, 8, 12]), map)
+    expanded_paths = remove_cycles(expanded_paths)
+    print_list_of_path(expanded_paths)
+    print("----------")
+    print("-------------------------------------------------------")
+    print("Test DFS")
+    route1 = depth_first_search(2, 7, map)
+    route2 = depth_first_search(13, 1, map)
+    route3 = depth_first_search(5, 12, map)
+    route4 = depth_first_search(14, 10, map)
+    print_list_of_path([route1])
+    print("----------")
+    print_list_of_path([route2])
+    print("----------")
+    print_list_of_path([route3])
+    print("----------")
+    print_list_of_path([route4])
+    print("----------")
+    print_list_of_path([route1])
+    print("----------")
+    print("-------------------------------------------------------")
+    print("Test BFS")
+    route1 = breadth_first_search(2, 7, map)
+    route2 = breadth_first_search(13, 1, map)
+    route3 = breadth_first_search(5, 12, map)
+    route4 = breadth_first_search(14, 10, map)
+    print_list_of_path([route1])
+    print("----------")
+    print_list_of_path([route2])
+    print("----------")
+    print_list_of_path([route3])
+    print("----------")
+    print_list_of_path([route4])
+    print("----------")
+    print_list_of_path([route1])
+    print("----------")
+    print("-------------------------------------------------------")
+    print("Test Distance to Stations")
+    distances = distance_to_stations([100, 200], map)
+    {k: round(v, 2) for k, v in distances.items()}
+    for k, v in distances.items():
+        print(f"{k}:{v}")
+    print("----------")
+    distances = distance_to_stations([300, 111], map)
+    print(round(distances[9], 6))
+    print("----------")
+    distances = distance_to_stations([10, 11], map)
+    print(round(distances[1], 6))
+    print("------------------------------------------------------------------------------------")
+    print("------------------------------------------------------------------------------------")
+    print("Starting Test section (Wooclap)")
+    print("-------------------------------------------------------")
+    print("Test 1")
+    example_path = expand(Path([2]), map)
+    print_list_of_path(example_path)
+    print("-------------------------------------------------------")
+    print("Test 2")
+    example_path = expand(Path([4,5]), map)
+    print_list_of_path(example_path)
+    print("-------------------------------------------------------")
+    print("Test 3")
+    example_path = expand(Path([4,5,6]), map)
+    print_list_of_path(example_path)
+    print("----------")
+    example_path = remove_cycles(example_path)
+    print_list_of_path(example_path)
+    print("-------------------------------------------------------")
+    print("Test 4")
+    example_path = remove_cycles([Path([7,7])])
+    print_list_of_path(example_path)
+    print("")
+    print("-------------------------------------------------------")
+    print("Test 5")
+    example_path = depth_first_search(3, 10, map)
+    print_list_of_path([example_path])
+    print("-------------------------------------------------------")
+    print("Test 6")
+    example_path = depth_first_search( 10 , 10, map )
+    print_list_of_path([example_path])
+    print("-------------------------------------------------------")
+    print("Test 7")
+    example_path = depth_first_search( 1 , 10, map )
+    print_list_of_path([example_path])
+    print("--------------------")
+    example_path = breadth_first_search( 1 , 10, map )
+    print_list_of_path([example_path])
+    print("-------------------------------------------------------")
+    print("Test 8")
+    example_path = breadth_first_search( 10, 10000, map)
+    print_list_of_path([example_path])
+    print("-------------------------------------------------------")
+    print("Test 9")
+    distances = distance_to_stations([0, 0], map)
+    for k, v in distances.items():
+        print(f"{k}:{v}")
 
-print("Starting Test section")
-print("-------------------------------------------------------")
-print("Test 1")
-example_path = expand(Path([2]), map)
-print_list_of_path(example_path)
-print("-------------------------------------------------------")
-print("Test 2")
-example_path = expand(Path([4,5]), map)
-print_list_of_path(example_path)
-print("-------------------------------------------------------")
-print("Test 3")
-example_path = expand(Path([4,5,6]), map)
-print_list_of_path(example_path)
-print("----------")
-example_path = remove_cycles(example_path)
-print_list_of_path(example_path)
-print("-------------------------------------------------------")
-print("Test 4")
-example_path = remove_cycles([Path([7,7])])
-print_list_of_path(example_path)
-print("")
-print("-------------------------------------------------------")
-print("Test 5")
-example_path = depth_first_search(3, 10, map)
-print_list_of_path([example_path])
-print("-------------------------------------------------------")
-print("Test 6")
-example_path = depth_first_search( 10 , 10, map )
-print_list_of_path([example_path])
-print("-------------------------------------------------------")
-print("Test 7")
-example_path = depth_first_search( 1 , 10, map )
-print_list_of_path([example_path])
-print("--------------------")
-example_path = breadth_first_search( 1 , 10, map )
-print_list_of_path([example_path])
-print("-------------------------------------------------------")
-print("Test 8")
-example_path = breadth_first_search( 10, 10000, map)
-print_list_of_path([example_path])
-print("-------------------------------------------------------")
-print("Test 9")
-distances = distance_to_stations([0, 0], map)
-for k, v in distances.items():
-    print(f"{k}:{v}")
+testing()
 
 

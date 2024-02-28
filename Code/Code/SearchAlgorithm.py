@@ -13,7 +13,6 @@ import os
 import math
 import copy
 
-
 def expand(path, map):
     """
      It expands a SINGLE station and returns the list of class Path.

@@ -97,14 +97,10 @@ def depth_first_search(origin_id, destination_id, map):
     while paths[0].last != destination_id and len(paths) > 0:
         path = paths.pop(0)
         paths = insert_depth_first_search(remove_cycles(expand(path,map)),paths)
-        #for i in paths:
-        #    print(i.route)
-        #print("_______________________")
     if paths[0].last == destination_id:
         return paths[0]
     else:
         return "No existeix Solucio"
-
 
 def insert_breadth_first_search(expand_paths, list_of_path):
     """
@@ -122,7 +118,6 @@ def insert_breadth_first_search(expand_paths, list_of_path):
 
     return list_of_path
 
-
 def breadth_first_search(origin_id, destination_id, map):
     """
      Breadth First Search algorithm
@@ -134,7 +129,17 @@ def breadth_first_search(origin_id, destination_id, map):
         Returns:
             list_of_path[0] (Path Class): The route that goes from origin_id to destination_id
     """
-    pass
+    paths = []
+    root_path = Path([origin_id])
+    paths.append(root_path)
+
+    while paths[0].last != destination_id and len(paths) > 0:
+        path = paths.pop(0)
+        paths = insert_breadth_first_search(remove_cycles(expand(path,map)),paths)
+    if paths[0].last == destination_id:
+        return paths[0]
+    else:
+        return "No existeix Solucio"
 
 
 def calculate_cost(expand_paths, map, type_preference=0):
@@ -146,7 +151,7 @@ def calculate_cost(expand_paths, map, type_preference=0):
                 map (object of Map class): All the map information
                 type_preference: INTEGER Value to indicate the preference selected:
                                 0 - Adjacency
-                                1 - minimum Time
+     +                           1 - minimum Time
                                 2 - minimum Distance
                                 3 - minimum Transfers
             Returns:

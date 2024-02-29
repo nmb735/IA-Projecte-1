@@ -98,17 +98,13 @@ def depth_first_search(origin_id, destination_id, map):
         paths = insert_depth_first_search(remove_cycles(expand(path,map)),paths)
         
     if len(paths) <= 0:
-        empty_path = Path([0])
-        empty_path.route.pop(0)
-        return empty_path
+        return []
     
     elif paths[0].last == destination_id:
         return paths[0]
     
     else:
-        empty_path = Path([0])
-        empty_path.route.pop(0)
-        return empty_path
+        return []
 
 def insert_breadth_first_search(expand_paths, list_of_path):
     """
@@ -146,17 +142,13 @@ def breadth_first_search(origin_id, destination_id, map):
         paths = insert_breadth_first_search(remove_cycles(expand(path,map)),paths)
         
     if len(paths) <= 0:
-        empty_path = Path([0])
-        empty_path.route.pop(0)
-        return empty_path
+        return []
     
     elif paths[0].last == destination_id:
         return paths[0]
     
     else:
-        empty_path = Path([0])
-        empty_path.route.pop(0)
-        return empty_path
+        return []
 
 def calculate_cost(expand_paths, map, type_preference=0):
     """

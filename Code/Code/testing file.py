@@ -240,12 +240,16 @@ def testing():
     print("-------------------------------------------------------")
     print("Test 8")
     example_path = breadth_first_search( 10, 10000, map)
-    print_list_of_path([example_path])
+    print(example_path)
     print("-------------------------------------------------------")
     print("Test 9")
     distances = distance_to_stations([0, 0], map)
     for k, v in distances.items():
         print(f"{k}:{v}")
+    print("-------------------------------------------------------")
+    print("Test 10")
+    example_path = breadth_first_search( 10, 8000, map)
+    print(example_path)
 
 testing()
 

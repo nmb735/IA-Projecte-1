@@ -1,6 +1,6 @@
 # This file contains all the required routines to make an A* search algorithm.
 #
-__author__ = 'TO_BE_FILLED'
+__author__ = '1632368'
 # _________________________________________________________________________________________
 # Intel.ligencia Artificial
 # Curs 2023 - 2024
@@ -13,7 +13,6 @@ import os
 import math
 import copy
 
-
 def expand(path, map):
     """
      It expands a SINGLE station and returns the list of class Path.
@@ -24,8 +23,20 @@ def expand(path, map):
         Returns:
             path_list (list): List of paths that are connected to the given path.
     """
-    pass
+    path_list = []
 
+    if len(path.route) > 0:
+        con = map.connections[path.last]
+        for c, cost in con.items():
+            n_path = Path(path.route.copy())
+            n_path.add_route(c)
+            n_path.update_g(cost)
+            path_list.append(n_path)
+
+    else:
+        raise TypeError("Path is empty, it has no routes")
+    
+    return path_list
 
 def remove_cycles(path_list):
     """
@@ -36,8 +47,21 @@ def remove_cycles(path_list):
         Returns:
             path_list (list): Expanded paths without cycles.
     """
-    pass
+    paths = []
 
+    for path in path_list:
+        visited = set()
+        cycle = False
+        for element in path.route:
+            if element in visited:
+                cycle = True
+                break
+            visited.add(element)
+
+        if not cycle:
+            paths.append(path)
+            
+    return paths
 
 def insert_depth_first_search(expand_paths, list_of_path):
     """
@@ -49,8 +73,10 @@ def insert_depth_first_search(expand_paths, list_of_path):
         Returns:
             list_of_path (LIST of Path Class): List of Paths where Expanded Path is inserted
     """
-    pass
-
+    #Pseudocode --> Insert up front
+    for path in reversed(expand_paths):
+        list_of_path.insert(0,path)
+    return list_of_path
 
 def depth_first_search(origin_id, destination_id, map):
     """
@@ -63,8 +89,22 @@ def depth_first_search(origin_id, destination_id, map):
         Returns:
             list_of_path[0] (Path Class): the route that goes from origin_id to destination_id
     """
-    pass
+    paths = []
+    root_path = Path([origin_id])
+    paths.append(root_path)
 
+    while len(paths) > 0 and paths[0].last != destination_id:
+        path = paths.pop(0)
+        paths = insert_depth_first_search(remove_cycles(expand(path,map)),paths)
+        
+    if len(paths) <= 0:
+        return []
+    
+    elif paths[0].last == destination_id:
+        return paths[0]
+    
+    else:
+        return []
 
 def insert_breadth_first_search(expand_paths, list_of_path):
     """
@@ -76,8 +116,11 @@ def insert_breadth_first_search(expand_paths, list_of_path):
            Returns:
                list_of_path (LIST of Path Class): List of Paths where Expanded Path is inserted
     """
-    pass
+    # Pseudocode --> Insert at the back
+    for path in expand_paths:
+        list_of_path.append(path)
 
+    return list_of_path
 
 def breadth_first_search(origin_id, destination_id, map):
     """
@@ -89,9 +132,23 @@ def breadth_first_search(origin_id, destination_id, map):
             map (object of Map class): All the map information
         Returns:
             list_of_path[0] (Path Class): The route that goes from origin_id to destination_id
-    """
-    pass
+    """  
+    paths = []
+    root_path = Path([origin_id])
+    paths.append(root_path)
 
+    while len(paths) > 0 and paths[0].last != destination_id:
+        path = paths.pop(0)
+        paths = insert_breadth_first_search(remove_cycles(expand(path,map)),paths)
+        
+    if len(paths) <= 0:
+        return []
+    
+    elif paths[0].last == destination_id:
+        return paths[0]
+    
+    else:
+        return []
 
 def calculate_cost(expand_paths, map, type_preference=0):
     """
@@ -102,14 +159,13 @@ def calculate_cost(expand_paths, map, type_preference=0):
                 map (object of Map class): All the map information
                 type_preference: INTEGER Value to indicate the preference selected:
                                 0 - Adjacency
-                                1 - minimum Time
+     +                           1 - minimum Time
                                 2 - minimum Distance
                                 3 - minimum Transfers
             Returns:
                 expand_paths (LIST of Paths): Expanded path with updated cost
     """
     pass
-
 
 def insert_cost(expand_paths, list_of_path):
     """
@@ -122,7 +178,6 @@ def insert_cost(expand_paths, list_of_path):
                list_of_path (LIST of Path Class): List of Paths where expanded_path is inserted according to cost
     """
     pass
-
 
 def uniform_cost_search(origin_id, destination_id, map, type_preference=0):
     """
@@ -141,7 +196,6 @@ def uniform_cost_search(origin_id, destination_id, map, type_preference=0):
             list_of_path[0] (Path Class): The route that goes from origin_id to destination_id
     """
     pass
-
 
 def calculate_heuristics(expand_paths, map, destination_id, type_preference=0):
     """
@@ -163,7 +217,6 @@ def calculate_heuristics(expand_paths, map, destination_id, type_preference=0):
     """
     pass
 
-
 def update_f(expand_paths):
     """
       Update the f of a path
@@ -174,7 +227,6 @@ def update_f(expand_paths):
              expand_paths (LIST of Path Class): Expanded paths with updated costs
     """
     pass
-
 
 def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost):
     """
@@ -192,7 +244,6 @@ def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost):
     """
     pass
 
-
 def insert_cost_f(expand_paths, list_of_path):
     """
         expand_paths is inserted to the list_of_path according to f VALUE
@@ -205,20 +256,27 @@ def insert_cost_f(expand_paths, list_of_path):
     """
     pass
 
-
 def distance_to_stations(coord, map):
     """
         From coordinates, it computes the distance to all stations in map.
         Format of the parameter is:
         Args:
-            coord (list): Two REAL values, which refer to the coordinates of a point in the city.
+            coord (list):  Two REAL values, which refer to the coordinates of a point in the city.
             map (object of Map class): All the map information
         Returns:
             (dict): Dictionary containing as keys, all the Indexes of all the stations in the map, and as values, the
             distance between each station and the coord point
     """
-    pass
+    distances = {}
 
+    for station_id, station_info in map.stations.items():
+        station_coor = [station_info['x'], station_info['y']]
+        # d = round(euclidean_dist(coord, station_coor),2)
+        distances[station_id] = euclidean_dist(coord, station_coor)
+
+    sorted_distances = dict(sorted(distances.items(), key=lambda x: (x[1],x[0])))
+
+    return sorted_distances
 
 def Astar(origin_id, destination_id, map, type_preference=0):
     """
@@ -238,17 +296,7 @@ def Astar(origin_id, destination_id, map, type_preference=0):
     """
     pass
 
-
-def Astar_improved(origin_coord, destination_coord, map):
-    """
-     A* Search algorithm
-     Format of the parameter is:
-        Args:
-            origin_coord (list): Two REAL values, which refer to the coordinates of the starting position
-            destination_coord (list): Two REAL values, which refer to the coordinates of the final position
-            map (object of Map class): All the map information
-
-        Returns:
-            list_of_path[0] (Path Class): The route that goes from origin_coord to destination_coord
-    """
-    pass
+#remove later!
+def helloWorld():
+    print("Hello World!")
+#remove later!

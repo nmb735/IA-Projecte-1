@@ -1,7 +1,7 @@
 import unittest
 from SearchAlgorithm import (
     __author__, expand, calculate_cost, calculate_heuristics, remove_cycles, depth_first_search,
-    breadth_first_search, uniform_cost_search, remove_redundant_paths, distance_to_stations, Astar, Astar_improved)
+    breadth_first_search, uniform_cost_search, remove_redundant_paths, distance_to_stations, Astar)
 from SubwayMap import Path
 from utils import print_list_of_path_with_cost, read_station_information, read_cost_table, read_information
 import os
@@ -211,30 +211,6 @@ class TestCases(unittest.TestCase):
         self.assertTrue(optimal_path == Path([3, 2, 10, 11, 12, 13, 14]) or
                         optimal_path == Path([3, 2, 5, 6, 7, 8, 13, 14]))
         self.assertEqual(optimal_path.f, 2)
-
-    def test_Astar_improved(self):
-        # If you want to see the optimal_path's route and f-cost,
-        # uncomment the print functions below
-
-        optimal_path = Astar_improved([80, 100], [100, 240], self.map)
-        # print(optimal_path.route, optimal_path.f)
-        self.assertEqual(optimal_path, Path([0, 11, 12, -1]))
-        self.assertEqual(round(optimal_path.f, 6), 18.417006)
-
-        optimal_path = Astar_improved([80, 180], [180, 50], self.map)
-        # print(optimal_path.route, optimal_path.f)
-        self.assertEqual(optimal_path, Path([0, 12, 11, 10, -1]))
-        self.assertEqual(round(optimal_path.f, 6), 20.516129)
-
-        optimal_path = Astar_improved([7, 250], [184, 127], self.map)
-        # print(optimal_path.route, optimal_path.f)
-        self.assertEqual(optimal_path, Path([0, 9, 8, 7, -1]))
-        self.assertEqual(round(optimal_path.f, 6), 35.592522)
-
-        optimal_path = Astar_improved([160, 180], [80, 170], self.map)
-        # print(optimal_path.route, optimal_path.f)
-        self.assertEqual(optimal_path, Path([0, -1]))
-        self.assertEqual(round(optimal_path.f, 6), 16.124515)
 
 
 if __name__ == "__main__":

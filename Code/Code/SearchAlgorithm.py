@@ -157,7 +157,7 @@ def breadth_first_search(origin_id, destination_id, map): #OK
         return []
 
 
-def calculate_cost(expand_paths, map, type_preference=0): # TEST!!!
+def calculate_cost(expand_paths, map, type_preference=0): # OK
     """
          Calculate the cost according to type preference
          Format of the parameter is:
@@ -178,6 +178,7 @@ def calculate_cost(expand_paths, map, type_preference=0): # TEST!!!
         return expand_paths
     
     elif type_preference == 1:
+        i = 0 # Debugging
         for path in expand_paths:
             if path.last in map.connections:
                 con = map.connections[path.last]
@@ -202,10 +203,8 @@ def calculate_cost(expand_paths, map, type_preference=0): # TEST!!!
     
     elif type_preference == 3:
         for path in expand_paths:
-            n_transfers = 0
-            for station in path.route[1:-1]:
-                n_transfers+=1
-            path.update_g(n_transfers)
+            if len(path.route) > 2:
+                path.update_g(1)
         return expand_paths
 
     else:
@@ -213,7 +212,7 @@ def calculate_cost(expand_paths, map, type_preference=0): # TEST!!!
         return 0
 
 
-def insert_cost(expand_paths, list_of_path): #TEST!!!
+def insert_cost(expand_paths, list_of_path): #OK
     """
         expand_paths is inserted to the list_of_path according to COST VALUE
         Format of the parameter is:
@@ -226,16 +225,15 @@ def insert_cost(expand_paths, list_of_path): #TEST!!!
     for path in expand_paths:
         list_of_path.append(path)
     
-    list_of_path.sort(key=lambda path: path.g)
+    list_of_path.sort(key=lambda path: (path.g, tuple(path.route)))
 
-    
     return list_of_path
 
 
-def uniform_cost_search(origin_id, destination_id, map, type_preference=0): #ERROR!!!
+def uniform_cost_search(origin_id, destination_id, map, type_preference=0):
     """
-     Uniform Cost Search algorithm
-     Format of the parameter is:
+    Uniform Cost Search algorithm
+    Format of the parameter is:
         Args:
             origin_id (int): Starting station id
             destination_id (int): Final station id
@@ -248,28 +246,33 @@ def uniform_cost_search(origin_id, destination_id, map, type_preference=0): #ERR
         Returns:
             list_of_path[0] (Path Class): The route that goes from origin_id to destination_id
     """
-    if type_preference != 0 and type_preference != 1 and type_preference != 2 and type_preference != 3:
+    if type_preference not in [0, 1, 2, 3]:
         print("Invalid type_preference value")
         return []
+    
     paths = []
+
     root_path = Path([origin_id])
+
     paths.append(root_path)
 
     while len(paths) > 0 and paths[0].last != destination_id:
-        print("#"*20)
-        print_list_of_path_with_cost(paths)
-        print("#"*20)
-                                     
+        print("#" * 50)
         path = paths.pop(0)
-        
-        paths = insert_cost(calculate_cost(remove_cycles(expand(path,map)),map,type_preference),paths) 
-        
+        ex = expand(path, map)
+        el = remove_cycles(ex)
+        c_list = calculate_cost(el, map, type_preference)
+        print("Calculate Cost: ", print_list_of_path_with_cost(c_list))
+        print("-" * 25)
+        new_paths = copy.deepcopy(paths)
+        paths = insert_cost(c_list, new_paths)
+        print("Insert Cost: ", print_list_of_path_with_cost(paths))
+        print("#" * 50)
+
     if len(paths) <= 0:
         return []
-    
     elif paths[0].last == destination_id:
         return paths[0]
-    
     else:
         return []
 

@@ -13,6 +13,9 @@ import os
 import math
 import copy
 
+def print_list_of_path_with_heu(path_list):
+    for p in path_list:
+        print("Route: {}, \t Cost: {}".format(p.route, round(p.h,2)))
 
 def expand(path, map): #OK
     """
@@ -349,7 +352,7 @@ def update_f(expand_paths): #OK
     return expand_paths
 
 
-def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost): #TO DO - WEIRD
+def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost): #OK
     """
       It removes the Redundant Paths. They are not optimal solution!
       If a station is visited and have a lower g-cost at this moment, we should remove this path.
@@ -364,23 +367,25 @@ def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost): #
              visited_stations_cost (dict): Updated visited stations cost
     """
     new_paths = []
-    for path in list_of_path:
-        if path.last in visited_stations_cost:
-            if path.g <= visited_stations_cost[path.last]:
-                visited_stations_cost[path.last] = path.g
-
     for path in expand_paths:
-        if path.last in visited_stations_cost:
-            if path.g <= visited_stations_cost[path.last]:
-                visited_stations_cost[path.last] = path.g
-                new_paths.append(path)
-        else:
-            visited_stations_cost[path.last] = path.g
+        if path.g < visited_stations_cost.get(path.last, float('inf')):
             new_paths.append(path)
-    
-    list_of_path = [path for path in list_of_path if path.last not in visited_stations_cost or path.g < visited_stations_cost[path.last]]
+            visited_stations_cost[path.last] = path.g
 
-    return new_paths, list_of_path, visited_stations_cost
+    #for path in new_paths:
+    #    visited_stations_cost[path.last] = path.g
+                
+    new_list_of_path = []
+    for last_path in list_of_path:
+        remove = False
+        for new_path in new_paths:
+            if new_path.last in last_path.route:
+                remove = True
+                break
+        if not remove:
+            new_list_of_path.append(last_path)
+    
+    return new_paths, new_list_of_path, visited_stations_cost
 
 
 def insert_cost_f(expand_paths, list_of_path): #OK
@@ -425,7 +430,7 @@ def distance_to_stations(coord, map): #OK
     return sorted_distances
 
 
-def Astar(origin_id, destination_id, map, type_preference=0):# TO DO 
+def Astar(origin_id, destination_id, map, type_preference=0):#OK 
     """
      A* Search algorithm
      Format of the parameter is:
@@ -444,11 +449,13 @@ def Astar(origin_id, destination_id, map, type_preference=0):# TO DO
     paths = []
     root_path = Path([origin_id])
     paths.append(root_path)
-
+    visited_stations_cost = {}
     while len(paths) > 0 and paths[0].last != destination_id:
         path = paths.pop(0)
-        paths = insert_depth_first_search(remove_cycles(expand(path,map)),paths)
-        
+        expand_paths = update_f(calculate_heuristics(calculate_cost(remove_cycles(expand(path,map)), map, type_preference), map, destination_id, type_preference))
+        expand_paths, paths, visited_stations_cost = remove_redundant_paths(expand_paths, paths, visited_stations_cost)
+        paths = insert_cost_f(expand_paths, paths)
+
     if len(paths) <= 0:
         return []
     

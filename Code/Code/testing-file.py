@@ -134,7 +134,8 @@ if __name__=="__main__":
     #example_path = expand(Path([5]), map)
     #print_list_of_path_with_cost(example_path)
     # test_main()
-    
+    optimal_path = Astar(8, 1, map, 0)
+    #print(optimal_path.route, optimal_path.f)
     
     
 

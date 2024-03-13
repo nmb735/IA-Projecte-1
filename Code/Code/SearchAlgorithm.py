@@ -14,7 +14,7 @@ import math
 import copy
 
 
-def expand(path, map):
+def expand(path, map): #OK
     """
      It expands a SINGLE station and returns the list of class Path.
      Format of the parameter is:
@@ -40,7 +40,7 @@ def expand(path, map):
     return path_list
 
 
-def remove_cycles(path_list):
+def remove_cycles(path_list): #OK
     """
      It removes from path_list the set of paths that include some cycles in their path.
      Format of the parameter is:
@@ -66,7 +66,7 @@ def remove_cycles(path_list):
     return paths
 
 
-def insert_depth_first_search(expand_paths, list_of_path):
+def insert_depth_first_search(expand_paths, list_of_path): #OK
     """
      expand_paths is inserted to the list_of_path according to DEPTH FIRST SEARCH algorithm
      Format of the parameter is:
@@ -82,7 +82,7 @@ def insert_depth_first_search(expand_paths, list_of_path):
     return list_of_path
 
 
-def depth_first_search(origin_id, destination_id, map):
+def depth_first_search(origin_id, destination_id, map): #OK
     """
      Depth First Search algorithm
      Format of the parameter is:
@@ -111,7 +111,7 @@ def depth_first_search(origin_id, destination_id, map):
         return []
 
 
-def insert_breadth_first_search(expand_paths, list_of_path):
+def insert_breadth_first_search(expand_paths, list_of_path): #OK
     """
         expand_paths is inserted to the list_of_path according to BREADTH FIRST SEARCH algorithm
         Format of the parameter is:
@@ -128,7 +128,7 @@ def insert_breadth_first_search(expand_paths, list_of_path):
     return list_of_path
 
 
-def breadth_first_search(origin_id, destination_id, map):
+def breadth_first_search(origin_id, destination_id, map): #OK
     """
      Breadth First Search algorithm
      Format of the parameter is:
@@ -157,7 +157,7 @@ def breadth_first_search(origin_id, destination_id, map):
         return []
 
 
-def calculate_cost(expand_paths, map, type_preference=0):
+def calculate_cost(expand_paths, map, type_preference=0): # TEST!!!
     """
          Calculate the cost according to type preference
          Format of the parameter is:
@@ -213,7 +213,7 @@ def calculate_cost(expand_paths, map, type_preference=0):
         return 0
 
 
-def insert_cost(expand_paths, list_of_path):
+def insert_cost(expand_paths, list_of_path): #TEST!!!
     """
         expand_paths is inserted to the list_of_path according to COST VALUE
         Format of the parameter is:
@@ -274,7 +274,7 @@ def uniform_cost_search(origin_id, destination_id, map, type_preference=0): #ERR
         return []
 
 
-def calculate_heuristics(expand_paths, map, destination_id, type_preference=0):
+def calculate_heuristics(expand_paths, map, destination_id, type_preference=0): #ERROR!!! - IDK HEURISTICS
     """
      Calculate and UPDATE the heuristics of a path according to type preference
      WARNING: In calculate_cost, we didn't update the cost of the path inside the function
@@ -337,7 +337,7 @@ def calculate_heuristics(expand_paths, map, destination_id, type_preference=0):
         return 0
 
 
-def update_f(expand_paths):
+def update_f(expand_paths): #OK
     """
       Update the f of a path
       Format of the parameter is:
@@ -346,10 +346,13 @@ def update_f(expand_paths):
          Returns:
              expand_paths (LIST of Path Class): Expanded paths with updated costs
     """
-    pass
+    if len(expand_paths) >= 0:
+        for path in expand_paths:
+            path.update_f()
+    return expand_paths
 
 
-def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost):
+def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost): #TO DO - WEIRD
     """
       It removes the Redundant Paths. They are not optimal solution!
       If a station is visited and have a lower g-cost at this moment, we should remove this path.
@@ -363,10 +366,19 @@ def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost):
              list_of_path (LIST of Path Class): list_of_path without redundant paths
              visited_stations_cost (dict): Updated visited stations cost
     """
-    pass
+    new_paths = []
+    for path in expand_paths:
+        if path.last in visited_stations_cost:
+            if path.g < visited_stations_cost[path.last]:
+                visited_stations_cost[path.last] = path.g
+                new_paths.append(path)
+        else:
+            visited_stations_cost[path.last] = path.g
+            new_paths.append(path)
+    return new_paths, list_of_path, visited_stations_cost
 
 
-def insert_cost_f(expand_paths, list_of_path):
+def insert_cost_f(expand_paths, list_of_path): #TEST!!!
     """
         expand_paths is inserted to the list_of_path according to f VALUE
         Format of the parameter is:
@@ -376,10 +388,16 @@ def insert_cost_f(expand_paths, list_of_path):
            Returns:
                list_of_path (LIST of Path Class): List of Paths where expanded_path is inserted according to f
     """
-    pass
+    for path in expand_paths:
+        list_of_path.append(path)
+    
+    list_of_path.sort(key=lambda path: path.f)
+
+    
+    return list_of_path
 
 
-def distance_to_stations(coord, map):
+def distance_to_stations(coord, map): #OK
     """
         From coordinates, it computes the distance to all stations in map.
         Format of the parameter is:
@@ -402,7 +420,7 @@ def distance_to_stations(coord, map):
     return sorted_distances
 
 
-def Astar(origin_id, destination_id, map, type_preference=0):
+def Astar(origin_id, destination_id, map, type_preference=0):# TO DO 
     """
      A* Search algorithm
      Format of the parameter is:
@@ -418,10 +436,25 @@ def Astar(origin_id, destination_id, map, type_preference=0):
         Returns:
             list_of_path[0] (Path Class): The route that goes from origin_id to destination_id
     """
-    pass
+    paths = []
+    root_path = Path([origin_id])
+    paths.append(root_path)
+
+    while len(paths) > 0 and paths[0].last != destination_id:
+        path = paths.pop(0)
+        paths = insert_depth_first_search(remove_cycles(expand(path,map)),paths)
+        
+    if len(paths) <= 0:
+        return []
+    
+    elif paths[0].last == destination_id:
+        return paths[0]
+    
+    else:
+        return []
 
 
-def Astar_improved(origin_coord, destination_coord, map):
+def Astar_improved(origin_coord, destination_coord, map): #TO DO
     """
      A* Search algorithm
      Format of the parameter is:

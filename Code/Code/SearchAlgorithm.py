@@ -31,7 +31,7 @@ def expand(path, map):
         for c, cost in con.items():
             n_path = Path(path.route.copy())
             n_path.add_route(c)
-            n_path.update_g(cost)
+            #n_path.update_g(cost)
             path_list.append(n_path)
 
     else:
@@ -172,7 +172,45 @@ def calculate_cost(expand_paths, map, type_preference=0):
             Returns:
                 expand_paths (LIST of Paths): Expanded path with updated cost
     """
-    pass
+    if type_preference == 0:
+        for path in expand_paths:
+            path.update_g(1)
+        return expand_paths
+    
+    elif type_preference == 1:
+        for path in expand_paths:
+            if path.last in map.connections:
+                con = map.connections[path.last]
+                for c, cost in con.items():
+                    if path.penultimate == c:
+                        path.update_g(cost)
+                        break
+        return expand_paths
+    
+    elif type_preference == 2:
+        # Distance = speed * time
+        for path in expand_paths:
+            if path.last in map.connections:
+                con = map.connections[path.last]
+                line_number = map.stations[path.last]['line']
+                line_velocity = map.velocity[line_number]
+                for c, cost in con.items():
+                    if path.penultimate == c:
+                        path.update_g(cost * line_velocity)
+                        break
+        return expand_paths
+    
+    elif type_preference == 3:
+        for path in expand_paths:
+            n_transfers = 0
+            for station in path.route[1:-1]:
+                n_transfers+=1
+            path.update_g(n_transfers)
+        return expand_paths
+
+    else:
+        print("Invalid type_preference value")
+        return 0
 
 
 def insert_cost(expand_paths, list_of_path):
@@ -185,10 +223,16 @@ def insert_cost(expand_paths, list_of_path):
            Returns:
                list_of_path (LIST of Path Class): List of Paths where expanded_path is inserted according to cost
     """
-    pass
+    for path in expand_paths:
+        list_of_path.append(path)
+    
+    list_of_path.sort(key=lambda path: path.g)
+
+    
+    return list_of_path
 
 
-def uniform_cost_search(origin_id, destination_id, map, type_preference=0):
+def uniform_cost_search(origin_id, destination_id, map, type_preference=0): #ERROR!!!
     """
      Uniform Cost Search algorithm
      Format of the parameter is:
@@ -204,7 +248,30 @@ def uniform_cost_search(origin_id, destination_id, map, type_preference=0):
         Returns:
             list_of_path[0] (Path Class): The route that goes from origin_id to destination_id
     """
-    pass
+    if type_preference != 0 and type_preference != 1 and type_preference != 2 and type_preference != 3:
+        print("Invalid type_preference value")
+        return []
+    paths = []
+    root_path = Path([origin_id])
+    paths.append(root_path)
+
+    while len(paths) > 0 and paths[0].last != destination_id:
+        print("#"*20)
+        print_list_of_path_with_cost(paths)
+        print("#"*20)
+                                     
+        path = paths.pop(0)
+        
+        paths = insert_cost(calculate_cost(remove_cycles(expand(path,map)),map,type_preference),paths) 
+        
+    if len(paths) <= 0:
+        return []
+    
+    elif paths[0].last == destination_id:
+        return paths[0]
+    
+    else:
+        return []
 
 
 def calculate_heuristics(expand_paths, map, destination_id, type_preference=0):
@@ -225,7 +292,49 @@ def calculate_heuristics(expand_paths, map, destination_id, type_preference=0):
         Returns:
             expand_paths (LIST of Path Class): Expanded paths with updated heuristics
     """
-    pass
+    if type_preference == 0: # Boolean --> Adjacent or not
+        for path in expand_paths:
+            path.update_h(1)
+            if path.last == destination_id or destination_id in map.connections[path.last]:
+                path.update_h(0)      
+        return expand_paths
+    
+    elif type_preference == 1: # Eucledian distance / max speed
+        max_speed = 45
+        dest_coor = [map.stations[destination_id]['x'], map.stations[destination_id]['y']]
+        for path in expand_paths:
+            if path.last in map.stations:
+                coor = [map.stations[path.last]['x'], map.stations[path.last]['y']]
+                path.update_h(euclidean_dist(coor, dest_coor) / max_speed)
+        return expand_paths
+    
+    elif type_preference == 2: # Eucledian distance
+        dest_coor = [map.stations[destination_id]['x'], map.stations[destination_id]['y']]
+        for path in expand_paths:
+            if path.last in map.stations:
+                coor = [map.stations[path.last]['x'], map.stations[path.last]['y']]
+                path.update_h(euclidean_dist(coor, dest_coor))
+        return expand_paths
+    
+    elif type_preference == 3:  # Boolean - Do I need more jumps after?
+        for path in expand_paths:
+            if path.last == destination_id:
+                path.update_h(0)
+            else:
+                more_transfers = True
+                for connection in map.connections[path.last]:
+                    if destination_id in map.connections[connection]:
+                        more_transfers = False
+                        break
+                if not more_transfers:
+                    path.update_h(0)
+                else:
+                    path.update_h(1)
+        return expand_paths
+    
+    else:
+        print("Invalid type_preference value")
+        return 0
 
 
 def update_f(expand_paths):

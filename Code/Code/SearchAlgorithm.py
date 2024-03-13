@@ -157,7 +157,7 @@ def breadth_first_search(origin_id, destination_id, map): #OK
         return []
 
 
-def calculate_cost(expand_paths, map, type_preference=0): # OK
+def calculate_cost(expand_paths, map, type_preference=0): # CHECK
     """
          Calculate the cost according to type preference
          Format of the parameter is:
@@ -178,7 +178,6 @@ def calculate_cost(expand_paths, map, type_preference=0): # OK
         return expand_paths
     
     elif type_preference == 1:
-        i = 0 # Debugging
         for path in expand_paths:
             if path.last in map.connections:
                 con = map.connections[path.last]
@@ -189,27 +188,32 @@ def calculate_cost(expand_paths, map, type_preference=0): # OK
         return expand_paths
     
     elif type_preference == 2:
-        # Distance = speed * time
+        # Distance = speed * time 
         for path in expand_paths:
-            if path.last in map.connections:
-                con = map.connections[path.last]
-                line_number = map.stations[path.last]['line']
-                line_velocity = map.velocity[line_number]
-                for c, cost in con.items():
-                    if path.penultimate == c:
-                        path.update_g(cost * line_velocity)
-                        break
+            distance = distance_to_stations([map.stations[path.penultimate]['x'], map.stations[path.penultimate]['y']], map)[path.last]
+            if distance != 0.0:
+                if path.last in map.connections:
+                    con = map.connections[path.last]
+                    line_number = map.stations[path.last]['line']
+                    line_velocity = map.velocity[line_number]
+                    for c, cost in con.items():
+                        if path.penultimate == c:
+                            path.update_g(cost * line_velocity)
+                            break
         return expand_paths
     
     elif type_preference == 3:
         for path in expand_paths:
-            if len(path.route) > 2:
+            line_number = int(map.stations[path.last]['line'])
+            prev_line_number = int(map.stations[path.penultimate]['line'])
+            if line_number != prev_line_number:
                 path.update_g(1)
+
         return expand_paths
 
     else:
         print("Invalid type_preference value")
-        return 0
+        return expand_paths
 
 
 def insert_cost(expand_paths, list_of_path): #OK
@@ -230,7 +234,7 @@ def insert_cost(expand_paths, list_of_path): #OK
     return list_of_path
 
 
-def uniform_cost_search(origin_id, destination_id, map, type_preference=0): #FALLA 1 CASO   
+def uniform_cost_search(origin_id, destination_id, map, type_preference=0): #OK   
     """
     Uniform Cost Search algorithm
     Format of the parameter is:
@@ -268,7 +272,7 @@ def uniform_cost_search(origin_id, destination_id, map, type_preference=0): #FAL
         return []
 
 
-def calculate_heuristics(expand_paths, map, destination_id, type_preference=0): #ERROR!!! - IDK HEURISTICS
+def calculate_heuristics(expand_paths, map, destination_id, type_preference=0): #OK
     """
      Calculate and UPDATE the heuristics of a path according to type preference
      WARNING: In calculate_cost, we didn't update the cost of the path inside the function
@@ -289,12 +293,16 @@ def calculate_heuristics(expand_paths, map, destination_id, type_preference=0): 
     if type_preference == 0: # Boolean --> Adjacent or not
         for path in expand_paths:
             path.update_h(1)
-            if path.last == destination_id or destination_id in map.connections[path.last]:
+            if path.last == destination_id:
                 path.update_h(0)      
         return expand_paths
     
     elif type_preference == 1: # Eucledian distance / max speed
-        max_speed = 45
+        max_speed = 0
+        for station_id, station_info in map.stations.items():
+            line_number = station_info['line']
+            if map.velocity[line_number] > max_speed:
+                max_speed = map.velocity[line_number]
         dest_coor = [map.stations[destination_id]['x'], map.stations[destination_id]['y']]
         for path in expand_paths:
             if path.last in map.stations:
@@ -310,19 +318,14 @@ def calculate_heuristics(expand_paths, map, destination_id, type_preference=0): 
                 path.update_h(euclidean_dist(coor, dest_coor))
         return expand_paths
     
-    elif type_preference == 3:  # Boolean - Do I need more jumps after?
+    elif type_preference == 3:  # Miro la linea --> SI ES LA MISMA, H = 0, SI NO, H = 1
         for path in expand_paths:
             if path.last == destination_id:
                 path.update_h(0)
             else:
-                more_transfers = True
-                for connection in map.connections[path.last]:
-                    if destination_id in map.connections[connection]:
-                        more_transfers = False
-                        break
-                if not more_transfers:
-                    path.update_h(0)
-                else:
+                line_number = map.stations[path.last]['line']
+                dest_line_number = map.stations[destination_id]['line']
+                if line_number != dest_line_number:
                     path.update_h(1)
         return expand_paths
     
@@ -361,14 +364,22 @@ def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost): #
              visited_stations_cost (dict): Updated visited stations cost
     """
     new_paths = []
+    for path in list_of_path:
+        if path.last in visited_stations_cost:
+            if path.g <= visited_stations_cost[path.last]:
+                visited_stations_cost[path.last] = path.g
+
     for path in expand_paths:
         if path.last in visited_stations_cost:
-            if path.g < visited_stations_cost[path.last]:
+            if path.g <= visited_stations_cost[path.last]:
                 visited_stations_cost[path.last] = path.g
                 new_paths.append(path)
         else:
             visited_stations_cost[path.last] = path.g
             new_paths.append(path)
+    
+    list_of_path = [path for path in list_of_path if path.last not in visited_stations_cost or path.g < visited_stations_cost[path.last]]
+
     return new_paths, list_of_path, visited_stations_cost
 
 

@@ -159,7 +159,9 @@ class TestCases(unittest.TestCase):
         cost_dict = {11: 350.12, 13: 135.87, 7: 169.04692, 9: 235.23, 15: 400}
         new_paths, list_of_path_removed, _ = remove_redundant_paths(expand_paths, list_of_path, cost_dict)
         # If you would like to print the paths uncomment the line below
-        # print_paths(new_paths, list_of_path_removed)
+        #print_paths(new_paths, list_of_path_removed)
+        #for c, v in cost_dict.items():
+         #   print(f"Cost to {c}: {v}")
         self.assertEqual(list_of_path_removed, [path_1, path_2])
         self.assertEqual(new_paths, expand_paths)
 
@@ -168,7 +170,7 @@ class TestCases(unittest.TestCase):
                         create_path_with_cost_g([12, 8, 7, 15], 222.52)]
         new_paths, list_of_path_removed, _ = remove_redundant_paths(expand_paths, list_of_path, cost_dict)
         # If you would like to print the paths uncomment the line below
-        # self.print_paths(new_paths, list_of_path_removed)
+        #self.print_paths(new_paths, list_of_path_removed)
         self.assertEqual(list_of_path_removed, [path_1, path_2])
         self.assertEqual(new_paths, expand_paths[0:1])
 

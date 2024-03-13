@@ -16,10 +16,10 @@ def test_1(n):
 
 def test_2():
     example_path = calculate_cost(expand(Path([2]), map), map, 3)
-    print_list_of_path_with_heu(example_path)
+    print_list_of_path_with_cost(example_path)
 
 def test_3():
-    example_path = expand(Path([5]), map)
+    example_path = expand(Path([8]), map)
     calculate_cost(example_path, map,2)
     print_list_of_path_with_cost(example_path)
 
@@ -114,6 +114,14 @@ def test_main():
     print("="*25)
     test_8(i)
 
+def get_cost(path, subway_map, type_preference):
+    new_path = Path([path.head])
+    for i in range(1, len(path.route)):
+        new_path.add_route(path.route[i])
+        paths_with_cost = calculate_cost([new_path], subway_map, type_preference)
+        new_path = paths_with_cost[0]
+    return new_path
+
 if __name__=="__main__":
     ROOT_FOLDER = '../CityInformation/Lyon_SmallCity/'
     map = read_station_information(os.path.join(ROOT_FOLDER, 'Stations.txt'))
@@ -126,6 +134,8 @@ if __name__=="__main__":
     #example_path = expand(Path([5]), map)
     #print_list_of_path_with_cost(example_path)
     # test_main()
+    
+    
     
 
     

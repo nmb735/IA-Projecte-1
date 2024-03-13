@@ -478,4 +478,10 @@ def Astar_improved(origin_coord, destination_coord, map): #TO DO
         Returns:
             list_of_path[0] (Path Class): The route that goes from origin_coord to destination_coord
     """
-    pass
+    walk_speed = 5
+    paths = [Path(0)]
+
+    destination_id = min(distance_to_stations(destination_coord, map), key=distance_to_stations(destination_coord, map).get)
+
+    while paths[0].last != destination_id:
+        alternatives = []

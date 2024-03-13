@@ -126,18 +126,6 @@ if __name__=="__main__":
     #example_path = expand(Path([5]), map)
     #print_list_of_path_with_cost(example_path)
     # test_main()
-    #x = create_path_with_cost_g(Path(9, 8, 12, 11, 10, 2), 0)
-    x = uniform_cost_search(9, 2, map, type_preference=1)
-    print_list_of_path_with_cost([x])
-
-""""
-    list_of_path = [create_path_with_cost_g([12, 8, 7, 2], 2), create_path_with_cost_g([12,11], 0), create_path_with_cost_g([12,11,10], 1)]
-    expanded = [create_path_with_cost_g([9,8,13,12], 8.51651), create_path_with_cost_g([1, 2], 0)]
-    expanded = calculate_cost(expanded, map, 1)
-    x = insert_cost(expanded, list_of_path)
-    print_list_of_path_with_cost(x)
-"""
-
     
 
     

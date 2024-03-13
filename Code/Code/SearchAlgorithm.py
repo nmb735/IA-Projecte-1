@@ -31,7 +31,7 @@ def expand(path, map): #OK
         for c, cost in con.items():
             n_path = Path(path.route.copy())
             n_path.add_route(c)
-            #n_path.update_g(cost)
+            n_path.g = path.g
             path_list.append(n_path)
 
     else:
@@ -230,7 +230,7 @@ def insert_cost(expand_paths, list_of_path): #OK
     return list_of_path
 
 
-def uniform_cost_search(origin_id, destination_id, map, type_preference=0):
+def uniform_cost_search(origin_id, destination_id, map, type_preference=0): #FALLA 1 CASO   
     """
     Uniform Cost Search algorithm
     Format of the parameter is:
@@ -257,17 +257,8 @@ def uniform_cost_search(origin_id, destination_id, map, type_preference=0):
     paths.append(root_path)
 
     while len(paths) > 0 and paths[0].last != destination_id:
-        print("#" * 50)
         path = paths.pop(0)
-        ex = expand(path, map)
-        el = remove_cycles(ex)
-        c_list = calculate_cost(el, map, type_preference)
-        print("Calculate Cost: ", print_list_of_path_with_cost(c_list))
-        print("-" * 25)
-        new_paths = copy.deepcopy(paths)
-        paths = insert_cost(c_list, new_paths)
-        print("Insert Cost: ", print_list_of_path_with_cost(paths))
-        print("#" * 50)
+        paths = insert_cost(calculate_cost(remove_cycles(expand(path,map)),map,type_preference),paths) 
 
     if len(paths) <= 0:
         return []
@@ -381,7 +372,7 @@ def remove_redundant_paths(expand_paths, list_of_path, visited_stations_cost): #
     return new_paths, list_of_path, visited_stations_cost
 
 
-def insert_cost_f(expand_paths, list_of_path): #TEST!!!
+def insert_cost_f(expand_paths, list_of_path): #OK
     """
         expand_paths is inserted to the list_of_path according to f VALUE
         Format of the parameter is:

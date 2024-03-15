@@ -133,17 +133,7 @@ if __name__=="__main__":
 
     #example_path = expand(Path([5]), map)
     #print_list_of_path_with_cost(example_path)
-    # test_main()
-    d = distance_to_stations([100,50], map)
-    d2 = distance_to_stations([60,180], map)
-
-    for s, x in d.items():
-        print(f"Station: {s}; Distance: {x}.")
-
-    print("-"*50)
-    
-    for s, x in d2.items():
-        print(f"Station: {s}; Distance: {x}.")
+    test_8()
     
     
 

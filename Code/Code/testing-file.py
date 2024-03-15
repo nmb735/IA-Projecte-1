@@ -122,6 +122,74 @@ def get_cost(path, subway_map, type_preference):
         new_path = paths_with_cost[0]
     return new_path
 
+def support_session_test():
+    print()
+    print("="*50)
+    print("Test 1: Transfer ")
+    print("-"*25)
+    expanded = expand(Path([2]), map)
+    print_list_of_path([path for path in calculate_cost(expanded, map, 3) if (path.g > 0)])
+    print(f"Expected result: [2, 5] and [2, 10]")
+    print("="*50)
+    
+    print()
+    print("="*50)
+    print("Test 2: Closest Stations ")
+    print("-"*25)
+    expanded = expand(Path([8]), map)
+    expanded = calculate_cost(expanded, map, 2)
+    expanded = sorted(expanded, key=lambda item: item.g)
+    print_list_of_path(expanded)
+    print(f"Expected result: [8, 12] and [8, 13]")
+    print("="*50)
+    
+    print()
+    print("="*50)
+    print("Test 3: Stops ")
+    print("-"*25)
+    best_path = uniform_cost_search(10, 14, map, 0)
+    print(best_path.g)
+    print(f"Expected result: 4")
+    print("="*50)
+    
+    print()
+    print("="*50)
+    print("Test 4: Uniform Cost Search")
+    print("-"*25)
+    best_path = uniform_cost_search(10, 10, map, 2)
+    print(best_path.route)
+    print(best_path.g)
+    print(f"Expected result: [10], 0")
+
+    print()
+    print("="*50)
+    print("Test 5: Heuristic")
+    print("-"*25)
+    expanded_paths = [Path([10, 7 , 6]), Path([10, 7, 8])]
+    updated_paths = calculate_heuristics(expanded_paths, map, 9, 1)
+    updated_paths = update_f(updated_paths)
+    heuristic_values = sorted([path.h for path in updated_paths])
+    print(heuristic_values)
+    print(f"Expected result: 0,63")
+    print("="*50)
+    
+    print()
+    print("="*50)
+    print("Test 6: Distance to stations")
+    print("-"*25)
+    print(distance_to_stations([108, 206], map))
+    print(f"Expected result: 8, 12, 13")
+    print("="*50)
+    
+    print()
+    print("="*50)
+    print("Test 7: Astar")
+    print("-"*25)
+    best_path = Astar(4, 14, map, 1)
+    print(best_path.route,"\n", best_path.g)
+    print(f"Expected result: [4, 5, 6, 7, 8, 13, 14], 50.1964")
+    print("="*50)
+
 if __name__=="__main__":
     ROOT_FOLDER = '../CityInformation/Lyon_SmallCity/'
     map = read_station_information(os.path.join(ROOT_FOLDER, 'Stations.txt'))
@@ -131,12 +199,7 @@ if __name__=="__main__":
     infoVelocity_clean = read_information(os.path.join(ROOT_FOLDER, 'InfoVelocity.txt'))
     map.add_velocity(infoVelocity_clean)
 
-    #example_path = expand(Path([5]), map)
-    #print_list_of_path_with_cost(example_path)
-    optimal = Astar_improved([80, 180], [180, 50], map)
-    #optimal = Astar(1, 14, map,1
-    print_list_of_path_with_cost([optimal])
-    #print(optimal.f)
+    support_session_test()
     
     
 

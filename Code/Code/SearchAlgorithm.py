@@ -17,6 +17,14 @@ def print_list_of_path_with_heu(path_list):
     for p in path_list:
         print("Route: {}, \t Cost: {}".format(p.route, round(p.h,2)))
 
+def print_list_of_path_with_f(path_list):
+    for p in path_list:
+        print("Route: {}, \t Cost: {}".format(p.route, round(p.f,2)))
+
+def print_list_of_path_with_data(path_list):
+    for p in path_list:
+        print(f"Route: {p.route}, Cost: {round(p.g,2)}, Heuristic: {round(p.h,2)}, f: {round(p.f,2)}")
+
 def expand(path, map): #OK
     """
      It expands a SINGLE station and returns the list of class Path.
@@ -303,9 +311,9 @@ def calculate_heuristics(expand_paths, map, destination_id, type_preference=0): 
     elif type_preference == 1: # Eucledian distance / max speed
         max_speed = 0
         for station_id, station_info in map.stations.items():
-            line_number = station_info['line']
-            if map.velocity[line_number] > max_speed:
-                max_speed = map.velocity[line_number]
+            velocity = station_info['velocity']
+            if velocity > max_speed:
+                max_speed = velocity
         dest_coor = [map.stations[destination_id]['x'], map.stations[destination_id]['y']]
         for path in expand_paths:
             if path.last in map.stations:
@@ -450,6 +458,7 @@ def Astar(origin_id, destination_id, map, type_preference=0):#OK
     root_path = Path([origin_id])
     paths.append(root_path)
     visited_stations_cost = {}
+
     while len(paths) > 0 and paths[0].last != destination_id:
         path = paths.pop(0)
         expand_paths = update_f(calculate_heuristics(calculate_cost(remove_cycles(expand(path,map)), map, type_preference), map, destination_id, type_preference))
@@ -479,9 +488,32 @@ def Astar_improved(origin_coord, destination_coord, map): #TO DO
             list_of_path[0] (Path Class): The route that goes from origin_coord to destination_coord
     """
     walk_speed = 5
-    paths = [Path(0)]
+    new_map = copy.deepcopy(map)
+    new_map.add_station(0, "Origin", 0, origin_coord[0], origin_coord[1])
+    new_map.add_station(-1, "Destination", 0, destination_coord[0], destination_coord[1])
+    new_map.stations[0]['velocity'] = walk_speed
+    new_map.stations[-1]['velocity'] = walk_speed
 
-    destination_id = min(distance_to_stations(destination_coord, map), key=distance_to_stations(destination_coord, map).get)
+    # Add connections from origin to all stations
+    distances_origin = distance_to_stations(origin_coord, map)
+    new_map.connections[0] = {}
+    for station_id, distance in distances_origin.items():
+        new_map.connections[0][station_id] = distance / walk_speed
+        new_map.connections[station_id][0] = distance / walk_speed
+    
+    # Add connections of destination to all stations
+    distances_destination = distance_to_stations(destination_coord, map)
+    new_map.connections[-1] = {}
+    for station_id, distance in distances_destination.items():
+        new_map.connections[station_id][-1] = distance / walk_speed
+        new_map.connections[-1][station_id] = distance / walk_speed
 
-    while paths[0].last != destination_id:
-        alternatives = []
+
+    new_map.connections[0][-1] = euclidean_dist(origin_coord, destination_coord) / walk_speed
+    new_map.connections[-1][0] = euclidean_dist(origin_coord, destination_coord) / walk_speed
+
+    optimal = Astar(0, (-1), new_map, 1)
+
+    return optimal
+  
+

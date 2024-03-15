@@ -133,7 +133,10 @@ if __name__=="__main__":
 
     #example_path = expand(Path([5]), map)
     #print_list_of_path_with_cost(example_path)
-    test_8()
+    optimal = Astar_improved([80, 180], [180, 50], map)
+    #optimal = Astar(1, 14, map,1
+    print_list_of_path_with_cost([optimal])
+    #print(optimal.f)
     
     
 
